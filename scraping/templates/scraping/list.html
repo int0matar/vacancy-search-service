@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block title %}Vacancy{% endblock %}
+
+{% block content %}
+  {% for vacancy in object_list %}
+    <div class="card my-3">
+      <div class="card-header">
+        <a href="{{ vacancy.url }}">{{ vacancy.title }}</a>
+      </div>
+
+      <div class="card-body">
+        <h6 class="card-title">{{ vacancy.company }}</h6>
+        <p class="card-text">{{ vacancy.description }}</p>
+        <p>{{ vacancy.city.name }}, {{ vacancy.language.name }}, {{ vacancy.timestamp }}</p>
+      </div>
+    </div>
+  {% endfor %}
+
+  {% if object_list.paginator.num_pages > 1 %}
+    {% include 'scraping/_pagination.html' with object_list=object_list %}
+  {% endif %}
+
+{% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from scraping.models import Vacancy
 from scraping.forms import FindForm
+from scraping.paginations import *
 
 
 def home_view(request):
@@ -23,5 +24,15 @@ def list_view(request):
         if language:
             _request['language__slug'] = language
         filter_list = Vacancy.objects.filter(**_request)
-        context['object_list'] = filter_list
+
+        page_number = request.GET.get('page', 1)
+        page_object = get_page_object(filter_list, page_number, 5)
+        is_paginated = get_is_paginated(page_object)
+        next_url = get_has_next(page_object, city, language)
+        prev_url = get_has_previous(page_object, city, language)
+
+        context['object_list'] = page_object
+        context['is_paginated'] = is_paginated
+        context['next_url'] = next_url
+        context['prev_url'] = prev_url
     return render(request, 'scraping/list.html', context)

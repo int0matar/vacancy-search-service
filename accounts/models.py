@@ -1,6 +1,5 @@
-from django.db import models
-from django.contrib.auth.models import UserManager
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
+from django.db import models
 
 
 class MyUserManager(BaseUserManager):
@@ -11,7 +10,7 @@ class MyUserManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
-        user = self.model(email=self.normalize_email(email),)
+        user = self.model(email=self.normalize_email(email))
 
         user.set_password(password)
         user.save(using=self._db)
@@ -28,18 +27,29 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser):
+    email = models.EmailField(
+        verbose_name='Адрес электронной почты',
+        max_length=255,
+        unique=True,
+    )
+    city = models.ForeignKey(
+        'scraping.City',
+        on_delete=models.SET_NULL,
+        verbose_name='Город',
+        blank=True,
+        null=True,
+    )
+    language = models.ForeignKey(
+        'scraping.Language',
+        on_delete=models.SET_NULL,
+        verbose_name='Язык программирования',
+        blank=True,
+        null=True,
+    )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     email_subscription = models.BooleanField(default=True)
-    email = models.EmailField(verbose_name='Адрес электронной почты',
-                              max_length=255,
-                              unique=True)
-    city = models.ForeignKey('scraping.city', verbose_name='Город',
-                             on_delete=models.SET_NULL, null=True, blank=True)
-    language = models.ForeignKey('scraping.language',
-                                 verbose_name='Язык программирования',
-                                 on_delete=models.SET_NULL, null=True,
-                                 blank=True)
+
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'

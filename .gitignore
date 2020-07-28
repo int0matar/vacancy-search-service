@@ -130,3 +130,6 @@ dmypy.json
 
 # Secret keys and tokens
 keys.py
+
+# IDEA
+.idea/

@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.hashers import check_password
 
+from scraping.models import City, Language
+
 
 User = get_user_model()
 
@@ -19,12 +21,36 @@ class UserAuthenticateForm(forms.Form):
         if email and password:
             qs = User.objects.filter(email=email)
             if not qs.exists():
-                raise forms.ValidationError('Такого пользователья нет')
+                raise forms.ValidationError('Такого пользователя нет')
 
             if not check_password(password, qs[0].password):
                 raise forms.ValidationError('Неверный пароль')
 
             user = authenticate(email=email, password=password)
             if not user:
-                raise forms.ValidationError('Данный аккаунт неактивен')
-        return super(UserLoginForm, self).clean(*args, **kwargs)
+                raise forms.ValidationError('Данный аккаунт отключен')
+        return super(UserAuthenticateForm, self).clean(*args, **kwargs)
+
+
+class UserRegistrationForm(forms.ModelForm):
+    email = forms.EmailField(
+        label='Введите email',
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    password1 = forms.CharField(
+        label='Введите пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    password2 = forms.CharField(
+        label='Введите пароль еще раз',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    class Meta:
+        model = User
+        fields = ('email',)
+
+    def clean_password2(self):
+        data = self.cleaned_data
+        if data['password1'] != data['password2']:
+            raise forms.ValidationError('Пароли не совпадают')
+        return data['password2']

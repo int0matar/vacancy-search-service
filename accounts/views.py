@@ -36,3 +36,26 @@ def register_view(request):
             request,
             'accounts/registration_page_successful.html', {'user': new_user})
     return render(request, 'accounts/registration_page.html', {'form': form})
+
+
+def update_view(request):
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            form = UserUpdateForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                user.city = data['city']
+                user.language = data['language']
+                user.email_subscription = data['email_subscription']
+                user.save()
+                return redirect('accounts:update')
+        form = UserUpdateForm(initial={
+            'city': user.city,
+            'language': user.language,
+            'email_subscription': user.email_subscription})
+        return render(
+            request,
+            'accounts/settings_update_page.html', {'form': form})
+    else:
+        return redirect('accounts:login')

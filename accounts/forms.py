@@ -54,3 +54,28 @@ class UserRegistrationForm(forms.ModelForm):
         if data['password1'] != data['password2']:
             raise forms.ValidationError('Пароли не совпадают')
         return data['password2']
+
+
+class UserUpdateForm(forms.Form):
+    city = forms.ModelChoiceField(
+        label='Город',
+        queryset=City.objects.all(),
+        required=True,
+        to_field_name='slug',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    language = forms.ModelChoiceField(
+        label='Язык программирования',
+        queryset=Language.objects.all(),
+        required=True,
+        to_field_name='slug',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    email_subscription = forms.BooleanField(
+        label='Рассылка',
+        required=False,
+        widget=forms.CheckboxInput
+    )
+    class Meta:
+        model = User
+        fields = ('city', 'language', 'email_subscription')

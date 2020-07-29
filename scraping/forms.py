@@ -15,6 +15,6 @@ class FindForm(forms.Form):
         queryset=Language.objects.all(),
         required=False,
         to_field_name='slug',
-        label='Язык программирования',
+        label='Специальность',
         widget=forms.Select(attrs={'class': 'form-control'})
     )

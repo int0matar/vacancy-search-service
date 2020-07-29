@@ -27,13 +27,13 @@ class City(models.Model):
 
 
 class Language(models.Model):
-    name = models.CharField(verbose_name='Язык программирования',
+    name = models.CharField(verbose_name='Специальность',
                             max_length=50, unique=True)
     slug = models.SlugField(max_length=50, unique=True, blank=True)
 
     class Meta:
-        verbose_name = 'Язык программирования'
-        verbose_name_plural = 'Языки программирования'
+        verbose_name = 'Специальность'
+        verbose_name_plural = 'Специальности'
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -53,7 +53,7 @@ class Vacancy(models.Model):
     city = models.ForeignKey('City', verbose_name='Город',
                              on_delete=models.CASCADE)
     language = models.ForeignKey('Language',
-                                 verbose_name='Язык программирования',
+                                 verbose_name='Специальность',
                                  on_delete=models.CASCADE)
     class Meta:
         ordering = ['-timestamp']
@@ -68,7 +68,7 @@ class UrlAddress(models.Model):
     city = models.ForeignKey('City', verbose_name='Город',
                              on_delete=models.CASCADE)
     language = models.ForeignKey('Language',
-                                 verbose_name='Языки программирования',
+                                 verbose_name='Специальность',
                                  on_delete=models.CASCADE)
     url_data = jsonfield.JSONField(verbose_name='Адрес', default=default_url)
 

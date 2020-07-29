@@ -59,3 +59,15 @@ def update_view(request):
             'accounts/settings_update_page.html', {'form': form})
     else:
         return redirect('accounts:login')
+
+
+def delete_view(request):
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            user_object = User.objects.get(pk=user.pk)
+            user_object.delete()
+        return render(
+            request,'accounts/delete_page_successful.html', {'user': user})
+    else:
+        return redirect('home')

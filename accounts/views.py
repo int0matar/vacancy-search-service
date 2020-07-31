@@ -8,6 +8,20 @@ from accounts.forms import (
 User = get_user_model()
 
 
+def register_view(request):
+    form = UserRegistrationForm(request.POST or None)
+    if form.is_valid():
+        new_user = form.save(commit=False)
+        new_user.set_password(form.cleaned_data['password2'])
+        new_user.save()
+        messages.success(request, 'Пользователь добавлен в систему.')
+        return render(
+            request,
+            'accounts/registration_account_successful.html',
+            {'user': new_user})
+    return render(request, 'accounts/registration_page.html', {'form': form})
+
+
 def login_view(request):
     form = UserAuthenticateForm(request.POST or None)
     if form.is_valid():
@@ -23,19 +37,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
-
-
-def register_view(request):
-    form = UserRegistrationForm(request.POST or None)
-    if form.is_valid():
-        new_user = form.save(commit=False)
-        new_user.set_password(form.cleaned_data['password2'])
-        new_user.save()
-        messages.success(request, 'Пользователь добавлен в систему.')
-        return render(
-            request,
-            'accounts/registration_page_successful.html', {'user': new_user})
-    return render(request, 'accounts/registration_page.html', {'form': form})
 
 
 def update_view(request):
@@ -68,6 +69,6 @@ def delete_view(request):
             user_object = User.objects.get(pk=user.pk)
             user_object.delete()
         return render(
-            request,'accounts/delete_page_successful.html', {'user': user})
+            request,'accounts/delete_account_successful.html', {'user': user})
     else:
         return redirect('home')

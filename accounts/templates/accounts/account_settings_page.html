@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+{% block title %}Аккаунт{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <h5 class="my-2">Удалить свой аккаунт?</h5>
+      <form method="POST" action="{% url 'accounts:delete' %}">{% csrf_token %}
+        <button type="submit" class="btn alert-warning my-3" style="border-radius: 5px 5px 90px 90px / 5px 5px 5px 5px;">Удалить</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

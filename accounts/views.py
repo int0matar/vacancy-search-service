@@ -34,6 +34,13 @@ def login_view(request):
     return render(request, 'accounts/login_page.html', {'form': form})
 
 
+def account_view(request):
+    if request.user.is_authenticated:
+        return render(request, 'accounts/account_settings_page.html')
+    else:
+        return redirect('home')
+
+
 def logout_view(request):
     logout(request)
     return redirect('home')

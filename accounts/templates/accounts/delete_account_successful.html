@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+{% block title %}Аккаунт{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <h5 class="my-2">Удаление пользователя</h5>
+      <p>Пользователь {{ user.email }} успешно удален
+        <a href="{% url 'home' %}">Вернуться на главную</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

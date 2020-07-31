@@ -1,15 +1,15 @@
 <div class="row">
   <div class="col-md-8 mx-auto">
     <nav aria-label="...">
-      <ul class="pagination">
+      <ul class="pagination pagicolor">
         <li class="page-item {% if not prev_url %} disabled {% endif %}">
-          <a class="page-link" href="{{ prev_url }}" tabindex="-1" aria-disabled="true">Previous</a>
+          <a class="page-link alert-success" href="{{ prev_url }}" tabindex="-1" aria-disabled="true">Previous</a>
         </li>
 
         {% for page in object_list.paginator.page_range %}
           {% if object_list.number == page %}
             <li class="page-item active" aria-current="page">
-              <a class="page-link" href="?city={{city}}&language={{language}}&page={{page}}">{{page}}
+              <a class="page-link" style="background-color: #D4EDDA; color: #6A756D" href="?city={{city}}&language={{language}}&page={{page}}">{{page}}
                 <span class="sr-only">(current)</span>
               </a>
             </li>
@@ -21,7 +21,7 @@
         {% endfor %}
 
         <li class="page-item {% if not next_url %} disabled {% endif %}">
-          <a class="page-link" href="{{ next_url }}">Next</a>
+          <a class="page-link alert-success" href="{{ next_url }}">Next</a>
         </li>
       </ul>
     </nav>

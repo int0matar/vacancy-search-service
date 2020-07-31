@@ -22,10 +22,8 @@ class UserAuthenticateForm(forms.Form):
             qs = User.objects.filter(email=email)
             if not qs.exists():
                 raise forms.ValidationError('Такого пользователя нет')
-
             if not check_password(password, qs[0].password):
                 raise forms.ValidationError('Неверный пароль')
-
             user = authenticate(email=email, password=password)
             if not user:
                 raise forms.ValidationError('Данный аккаунт отключен')
@@ -35,14 +33,17 @@ class UserAuthenticateForm(forms.Form):
 class UserRegistrationForm(forms.ModelForm):
     email = forms.EmailField(
         label='Введите email',
+        label_suffix='',
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     password1 = forms.CharField(
         label='Введите пароль',
+        label_suffix='',
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     password2 = forms.CharField(
         label='Введите пароль еще раз',
+        label_suffix='',
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     class Meta:
@@ -58,22 +59,25 @@ class UserRegistrationForm(forms.ModelForm):
 
 class UserUpdateForm(forms.Form):
     city = forms.ModelChoiceField(
-        label='Город',
         queryset=City.objects.all(),
-        required=True,
         to_field_name='slug',
+        required=True,
+        label='Город',
+        label_suffix='',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     language = forms.ModelChoiceField(
-        label='Язык программирования',
         queryset=Language.objects.all(),
-        required=True,
         to_field_name='slug',
+        required=True,
+        label='Язык программирования',
+        label_suffix='',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     email_subscription = forms.BooleanField(
-        label='Рассылка',
         required=False,
+        label='Рассылка',
+        label_suffix='',
         widget=forms.CheckboxInput
     )
     class Meta:

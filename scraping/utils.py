@@ -1,4 +1,4 @@
-translit = {
+translation_dict = {
     '': '',
     ' ': '-',
     '-': '-',
@@ -72,7 +72,9 @@ translit = {
     'ю': 'iu',
     'я': 'ia',
 }
+
+
 def icao_transliter(text):
-    """ICAO Transliteration Standart. An auto-translit and record for
+    """ICAO Transliteration Standard. An auto-translate and record for
     slug field by name field in scraping.models"""
-    return ''.join(translit[letter] for letter in text.lower())
+    return ''.join(translation_dict[letter] for letter in text.lower())

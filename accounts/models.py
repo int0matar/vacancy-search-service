@@ -30,25 +30,28 @@ class MyUser(AbstractBaseUser):
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
         max_length=255,
-        unique=True,
+        unique=True
     )
     city = models.ForeignKey(
         'scraping.City',
-        on_delete=models.SET_NULL,
         verbose_name='Город',
+        on_delete=models.SET_NULL,
         blank=True,
-        null=True,
+        null=True
     )
     language = models.ForeignKey(
         'scraping.Language',
-        on_delete=models.SET_NULL,
         verbose_name='Язык программирования',
+        on_delete=models.SET_NULL,
         blank=True,
-        null=True,
+        null=True
+    )
+    email_subscription = models.BooleanField(
+        default=True,
+        verbose_name='Подписка'
     )
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-    email_subscription = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False, verbose_name='Администратор')
 
     objects = MyUserManager()
 

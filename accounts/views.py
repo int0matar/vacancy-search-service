@@ -5,6 +5,7 @@ from django.contrib import messages
 from accounts.forms import (
     UserAuthenticateForm, UserRegistrationForm, UserUpdateForm
 )
+
 User = get_user_model()
 
 
@@ -14,11 +15,8 @@ def register_view(request):
         new_user = form.save(commit=False)
         new_user.set_password(form.cleaned_data['password2'])
         new_user.save()
-        messages.success(request, 'Пользователь добавлен в систему.')
-        return render(
-            request,
-            'accounts/registration_account_successful.html',
-            {'user': new_user})
+        return render(request, 'accounts/registration_account_successful.html',
+                      {'user': new_user})
     return render(request, 'accounts/registration_page.html', {'form': form})
 
 
@@ -57,14 +55,14 @@ def update_view(request):
                 user.language = data['language']
                 user.email_subscription = data['email_subscription']
                 user.save()
+                messages.success(request, 'Настройки обновлены')
                 return redirect('accounts:update')
         form = UserUpdateForm(initial={
-            'city': user.city,
-            'language': user.language,
-            'email_subscription': user.email_subscription})
-        return render(
-            request,
-            'accounts/settings_update_page.html', {'form': form})
+                              'city': user.city,
+                              'language': user.language,
+                              'email_subscription': user.email_subscription})
+        return render(request, 'accounts/update_settings_page.html',
+                      {'form': form})
     else:
         return redirect('accounts:login')
 
@@ -75,7 +73,7 @@ def delete_view(request):
         if request.method == 'POST':
             user_object = User.objects.get(pk=user.pk)
             user_object.delete()
-        return render(
-            request,'accounts/delete_account_successful.html', {'user': user})
+        return render(request, 'accounts/delete_account_successful.html',
+                      {'user': user})
     else:
         return redirect('home')

@@ -4,48 +4,60 @@ from django.contrib.auth.hashers import check_password
 
 from scraping.models import City, Language
 
-
 User = get_user_model()
 
 
 class UserAuthenticateForm(forms.Form):
-    email = forms.EmailField(widget=forms.EmailInput(
-                                          attrs={'class': 'form-control'}))
-    password = forms.CharField(widget=forms.PasswordInput(
-                                            attrs={'class': 'form-control'}))
+    email = forms.EmailField(
+        label=False,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите email'})
+    )
+    password = forms.CharField(
+        label=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите пароль'})
+    )
 
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get('email').strip()
         password = self.cleaned_data.get('password').strip()
 
         if email and password:
-            qs = User.objects.filter(email=email)
-            if not qs.exists():
+            user_account = User.objects.filter(email=email)
+            if not user_account.exists():
                 raise forms.ValidationError('Такого пользователя нет')
-            if not check_password(password, qs[0].password):
+            if not check_password(password, user_account[0].password):
                 raise forms.ValidationError('Неверный пароль')
             user = authenticate(email=email, password=password)
             if not user:
                 raise forms.ValidationError('Данный аккаунт отключен')
-        return super(UserAuthenticateForm, self).clean(*args, **kwargs)
+        return super(UserAuthenticateForm, self).clean()
+        # return super(UserAuthenticateForm, self).clean(*args, **kwargs)
 
 
 class UserRegistrationForm(forms.ModelForm):
     email = forms.EmailField(
-        label='Введите email',
-        label_suffix='',
-        widget=forms.EmailInput(attrs={'class': 'form-control'})
+        label=False,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите email'})
     )
     password1 = forms.CharField(
-        label='Введите пароль',
-        label_suffix='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        label=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите пароль'})
     )
     password2 = forms.CharField(
-        label='Введите пароль еще раз',
-        label_suffix='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        label=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите пароль еще раз'})
     )
+
     class Meta:
         model = User
         fields = ('email',)
@@ -62,24 +74,24 @@ class UserUpdateForm(forms.Form):
         queryset=City.objects.all(),
         to_field_name='slug',
         required=True,
-        label='Город',
-        label_suffix='',
+        label=False,
+        empty_label='Выберите город',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     language = forms.ModelChoiceField(
         queryset=Language.objects.all(),
         to_field_name='slug',
         required=True,
-        label='Язык программирования',
-        label_suffix='',
+        label=False,
+        empty_label='Выберите специальность',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     email_subscription = forms.BooleanField(
         required=False,
         label='Рассылка',
-        label_suffix='',
         widget=forms.CheckboxInput
     )
+
     class Meta:
         model = User
         fields = ('city', 'language', 'email_subscription')

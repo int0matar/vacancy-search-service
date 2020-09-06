@@ -11,21 +11,18 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from keys import PROJECT_SECRET_KEY
+from dotenv import load_dotenv
+load_dotenv()
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-# System-level environment variables are defined first
-# If there are not, then local variables are defined
-KEY_FOLDER = os.path.join(BASE_DIR, 'keys')
-
-# Django secret key
-SECRET_KEY = PROJECT_SECRET_KEY
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Quick-start development settings - unsuitable for production
@@ -129,12 +126,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 
 # Overriding user authentication model
+
 AUTH_USER_MODEL = 'accounts.MyUser'
+
+
+# Mailing settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_ADMIN = os.getenv('EMAIL_HOST_ADMIN')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = True

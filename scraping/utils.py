@@ -1,4 +1,4 @@
-translation_dict = {
+translation_set = {
     '': '',
     ' ': '-',
     '-': '-',
@@ -74,7 +74,7 @@ translation_dict = {
 }
 
 
-def icao_transliter(text):
+def transliteration(text):
     """ICAO Transliteration Standard. An auto-translate and record for
     slug field by name field in scraping.models"""
-    return ''.join(translation_dict[letter] for letter in text.lower())
+    return ''.join(translation_set[letter] for letter in text.lower())

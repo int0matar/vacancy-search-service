@@ -27,39 +27,30 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='Адрес электронной почты',
-        max_length=255,
-        unique=True
-    )
-    city = models.ForeignKey(
-        'scraping.City',
-        verbose_name='Город',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
-    language = models.ForeignKey(
-        'scraping.Language',
-        verbose_name='Язык программирования',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
-    email_subscription = models.BooleanField(
-        default=True,
-        verbose_name='Подписка'
-    )
+    location_fk = models.ForeignKey('scraping.Location',
+                                    verbose_name='Город',
+                                    on_delete=models.SET_NULL,
+                                    blank=True,
+                                    null=True)
+    specialty_fk = models.ForeignKey('scraping.Specialty',
+                                     verbose_name='Язык программирования',
+                                     on_delete=models.SET_NULL,
+                                     blank=True,
+                                     null=True)
+    email_field = models.EmailField(verbose_name='Адрес электронной почты',
+                                    max_length=255,
+                                    unique=True)
+    is_subscriber = models.BooleanField(default=True, verbose_name='Подписка')
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False, verbose_name='Администратор')
 
     objects = MyUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'email_field'
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.email
+        return self.email_field
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"

@@ -19,7 +19,8 @@ headers = [
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9*/*;q=0.8'},
 ]
 
-def work_ua(url, city=None, language=None):
+
+def work_ua(url, location=None, specialty=None):
     response = requests.get(url, headers=headers[randint(0, 4)])
     domain = 'https://www.work.ua'
     jobs, errors = [], []
@@ -39,20 +40,22 @@ def work_ua(url, city=None, language=None):
                     company_name = div.find('img')
                     if company_name:
                         company = company_name['alt']
-                    jobs.append({
-                        'url': domain+link, 'title': title.text,
-                        'company': company, 'description': description,
-                        'city_id': city, 'language_id': language})
+                    jobs.append({'url_field': domain+link,
+                                 'title_char_field': title.text,
+                                 'company_char_field': company,
+                                 'description_text_field': description,
+                                 'location_fk_id': location,
+                                 'specialty_fk_id': specialty})
             else:
-                errors.append({'url': url, 'title': 'Div does not exists.'})
+                errors.append({'url': url, 'title': 'Div does not exists'})
         else:
-            errors.append({'url': url, 'title': 'Page do not response.'})
+            errors.append({'url': url, 'title': 'Page do not response'})
     else:
-            errors.append({'url': url, 'title': 'URL do not response.'})
+        errors.append({'url': url, 'title': 'URL do not response'})
     return jobs, errors
 
 
-def rabota_ua(url, city=None, language=None):
+def rabota_ua(url, location=None, specialty=None):
     response = requests.get(url, headers=headers[randint(0, 4)])
     domain = 'https://rabota.ua'
     jobs, errors = [], []
@@ -60,7 +63,7 @@ def rabota_ua(url, city=None, language=None):
     if url:
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
-            table = soup.find('table', id='ctl00_content_ctl00_gridList')
+            table = soup.find('table', id='ctl00_content_vacancyList_gridList')
 
             if table:
                 list_tr = table.find_all('tr', attrs={'id': True})
@@ -75,20 +78,22 @@ def rabota_ua(url, city=None, language=None):
                             'p', attrs={'class': 'company-name'})
                         if company_name:
                             company = company_name.a.text
-                        jobs.append({
-                            'url': domain+link, 'title': title.text,
-                            'company': company, 'description': description,
-                            'city_id': city, 'language_id': language})
+                        jobs.append({'url_field': domain+link,
+                                     'title_char_field': title.text,
+                                     'company_char_field': company,
+                                     'description_text_field': description,
+                                     'location_fk_id': location,
+                                     'specialty_fk_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Table does not exists'})
         else:
             errors.append({'url': url, 'title': 'Page do not response'})
     else:
-            errors.append({'url': url, 'title': 'URL do not response.'})
+        errors.append({'url': url, 'title': 'URL do not response'})
     return jobs, errors
 
 
-def dou_ua(url, city=None, language=None):
+def dou_ua(url, location=None, specialty=None):
     response = requests.get(url, headers=headers[randint(0, 4)])
     jobs, errors = [], []
 
@@ -103,28 +108,30 @@ def dou_ua(url, city=None, language=None):
                     if '__hot' not in li['class']:
                         title = li.find('div', attrs={'class': 'title'})
                         link = title.a['href']
-                        company_description = li.find(
-                            'div', attrs={'class': 'sh-info'})
+                        company_description = li.find('div', attrs={'class':
+                                                                    'sh-info'})
                         description = company_description.text
                         company = 'No name'
-                        company_name = title.find('a',
-                                                  attrs={'class': 'company'})
+                        company_name = title.find('a', attrs={'class':
+                                                              'company'})
                         if company_name:
                             company = company_name.text
-                        jobs.append({
-                            'url': link, 'title': title.text,
-                            'company': company, 'description': description,
-                            'city_id': city, 'language_id': language})
+                        jobs.append({'url_field': link,
+                                     'title_char_field': title.text,
+                                     'company_char_field': company,
+                                     'description_text_field': description,
+                                     'location_fk_id': location,
+                                     'specialty_fk_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Div does not exists'})
         else:
             errors.append({'url': url, 'title': 'Page do not response'})
     else:
-            errors.append({'url': url, 'title': 'URL do not response.'})
+        errors.append({'url': url, 'title': 'URL do not response'})
     return jobs, errors
 
 
-def djinni_co(url, city=None, language=None):
+def djinni_co(url, location=None, specialty=None):
     response = requests.get(url, headers=headers[randint(0, 4)])
     domain = 'https://djinni.co'
     jobs, errors = [], []
@@ -135,27 +142,29 @@ def djinni_co(url, city=None, language=None):
             main_ul = soup.find('ul', attrs={'class': 'list-jobs'})
 
             if main_ul:
-                list_li = main_ul.find_all('li',
-                                           attrs={'class': 'list-jobs__item'})
+                list_li = main_ul.find_all('li', attrs={'class':
+                                                        'list-jobs__item'})
                 for li in list_li:
                     title = li.find('div', attrs={'class': 'list-jobs__title'})
                     link = title.a['href']
-                    company_description = li.find(
-                        'div', attrs={'class': 'list-jobs__description'})
+                    company_description = li.find('div', attrs={'class':
+                                                         'list-jobs__description'})
                     description = company_description.text
-                    company_name = li.find(
-                        'div', attrs={'class': 'list-jobs__details__info'})
+                    company_name = li.find('div', attrs={'class':
+                                                  'list-jobs__details__info'})
                     company = 'No name'
                     if company_name:
                         company = company_name.text
-                    jobs.append({
-                        'url': domain+link, 'title': title.text,
-                        'company': company, 'description': description,
-                        'city_id': city, 'language_id': language})
+                    jobs.append({'url_field': domain+link,
+                                 'title_char_field': title.text,
+                                 'company_char_field': company,
+                                 'description_text_field': description,
+                                 'location_fk_id': location,
+                                 'specialty_fk_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Div does not exists'})
         else:
             errors.append({'url': url, 'title': 'Page do not response'})
     else:
-        errors.append({'url': url, 'title': 'URL do not response.'})
+        errors.append({'url': url, 'title': 'URL do not response'})
     return jobs, errors

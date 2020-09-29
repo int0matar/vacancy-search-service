@@ -1,35 +1,34 @@
 from django.shortcuts import render
 
 from scraping.models import Vacancy
-from scraping.forms import FindForm
-from scraping.paginations import *
+from scraping.forms import VacancyRequestForm
+from scraping.paginations import (get_page_object, get_paginate, get_next_page,
+                                  get_previous_page)
 
 
 def home_view(request):
-    form = FindForm()
+    form = VacancyRequestForm()
     return render(request, 'scraping/home.html', {'form': form})
 
 
 def list_view(request):
-    city = request.GET.get('city')
-    language = request.GET.get('language')
-    context = {
-        'city': city,
-        'language': language,
-    }
-    if city or language:
-        _request = {}
-        if city:
-            _request['city__slug'] = city
-        if language:
-            _request['language__slug'] = language
-        filter_list = Vacancy.objects.filter(**_request)
+    location = request.GET.get('location')
+    specialty = request.GET.get('specialty')
+    context = {'location': location, 'specialty': specialty}
+
+    if location or specialty:
+        request_forms_by_slug = {}
+        if location:
+            request_forms_by_slug['location__slug'] = location
+        if specialty:
+            request_forms_by_slug['specialty__slug'] = specialty
+        vacancy_filter = Vacancy.objects.filter(**request_forms_by_slug)
 
         page_number = request.GET.get('page', 1)
-        page_object = get_page_object(filter_list, page_number, 5)
-        is_paginated = get_is_paginated(page_object)
-        next_url = get_has_next(page_object, city, language)
-        prev_url = get_has_previous(page_object, city, language)
+        page_object = get_page_object(vacancy_filter, page_number, 5)
+        is_paginated = get_paginate(page_object)
+        next_url = get_next_page(page_object, location, specialty)
+        prev_url = get_previous_page(page_object, location, specialty)
 
         context['object_list'] = page_object
         context['is_paginated'] = is_paginated

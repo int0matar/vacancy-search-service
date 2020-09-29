@@ -76,5 +76,9 @@ translation_set = {
 
 def transliteration(text):
     """ICAO Transliteration Standard. An auto-translate and record for
-    slug field by name field in scraping.models"""
+    'slug' field by 'name' field in scraping.models"""
     return ''.join(translation_set[letter] for letter in text.lower())
+
+
+def default_url():
+    return {'work_ua': '', 'rabota_ua': '', 'dou_ua': '', 'djinni_co': ''}

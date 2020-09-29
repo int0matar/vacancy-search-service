@@ -1,35 +1,39 @@
 from django.db import models
 import jsonfield
 
-from scraping.utils import icao_transliter
+from scraping.utils import transliteration, default_url
 
 
-def default_url():
-    return {'work_ua': '', 'rabota_ua': '', 'dou_ua': '', 'djinni_co': ''}
-
-
-class City(models.Model):
-    name = models.CharField(verbose_name='Название населенного пункта',
-                            max_length=50, unique=True)
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
+class Location(models.Model):
+    name = models.CharField(verbose_name='Населенный пункт',
+                            max_length=50,
+                            unique=True)
+    slug = models.SlugField(verbose_name='Линк',
+                            max_length=50,
+                            unique=True,
+                            blank=True)
 
     class Meta:
-        verbose_name = 'Название населенного пункта'
-        verbose_name_plural = 'Название населенных пунктов'
+        verbose_name = 'Населенный пункт'
+        verbose_name_plural = 'Населенные пункты'
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = icao_transliter(self.name)
+            self.slug = transliteration(self.name)
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
 
-class Language(models.Model):
+class Specialty(models.Model):
     name = models.CharField(verbose_name='Специальность',
-                            max_length=50, unique=True)
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
+                            max_length=50,
+                            unique=True)
+    slug = models.SlugField(verbose_name='Линк',
+                            max_length=50,
+                            unique=True,
+                            blank=True)
 
     class Meta:
         verbose_name = 'Специальность'
@@ -37,7 +41,7 @@ class Language(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = icao_transliter(self.name)
+            self.slug = transliteration(self.name)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -45,18 +49,28 @@ class Language(models.Model):
 
 
 class Vacancy(models.Model):
+    location = models.ForeignKey('scraping.Location',
+                                 verbose_name='Город',
+                                 on_delete=models.CASCADE,
+                                 null=True)
+    specialty = models.ForeignKey('scraping.Specialty',
+                                  verbose_name='Специальность',
+                                  on_delete=models.CASCADE,
+                                  null=True)
+    title = models.CharField(verbose_name='Заголовок вакансии',
+                             max_length=250,
+                             blank=True)
+    company = models.CharField(verbose_name='Компания',
+                               max_length=250,
+                               blank=True)
+    description = models.TextField(verbose_name='Описание вакансии',
+                                   max_length=5000,
+                                   blank=True)
     url = models.URLField(unique=True)
-    title = models.CharField(verbose_name='Заголовок вакансии', max_length=250)
-    company = models.CharField(verbose_name='Компания', max_length=250)
-    description = models.TextField(verbose_name='Описание вакансии')
-    timestamp = models.DateField(verbose_name='Дата', auto_now_add=True)
-    city = models.ForeignKey('City', verbose_name='Город',
-                             on_delete=models.CASCADE)
-    language = models.ForeignKey('Language',
-                                 verbose_name='Специальность',
-                                 on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='Дата', auto_now_add=True)
+
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-date']
         verbose_name = 'Вакансия'
         verbose_name_plural = 'Вакансии'
 
@@ -64,30 +78,33 @@ class Vacancy(models.Model):
         return self.title
 
 
-class UrlAddress(models.Model):
-    city = models.ForeignKey('City', verbose_name='Город',
-                             on_delete=models.CASCADE)
-    language = models.ForeignKey('Language',
-                                 verbose_name='Специальность',
-                                 on_delete=models.CASCADE)
-    url_data = jsonfield.JSONField(verbose_name='Адрес', default=default_url)
+class Url(models.Model):
+    location = models.ForeignKey('scraping.Location',
+                                 verbose_name='Город',
+                                 on_delete=models.CASCADE,
+                                 null=True)
+    specialty = models.ForeignKey('scraping.Specialty',
+                                  verbose_name='Специальность',
+                                  on_delete=models.CASCADE,
+                                  null=True)
+    url_json = jsonfield.JSONField(verbose_name='Адрес', default=default_url)
 
     class Meta:
-        unique_together = ('city', 'language')
+        unique_together = ('location', 'specialty')
         verbose_name = 'URL-Адрес'
         verbose_name_plural = 'URL-Адреса'
 
     def __str__(self):
-        return self.url_data
+        return str(self.url_json)
 
 
-class ErrorLog(models.Model):
-    error_data = jsonfield.JSONField()
-    timestamp = models.DateField(verbose_name='Дата', auto_now_add=True)
+class Error(models.Model):
+    error_json = jsonfield.JSONField(verbose_name='Данные ошибок')
+    date = models.DateField(verbose_name='Дата', auto_now_add=True)
 
     class Meta:
         verbose_name = 'Ошибка'
         verbose_name_plural = 'Ошибки'
 
     def __str__(self):
-        return self.timestamp
+        return str(self.date)

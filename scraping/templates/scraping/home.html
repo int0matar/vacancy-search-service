@@ -1,21 +1,34 @@
 {% extends "base.html" %}
 
+{% load static %}
 
 {% block title %}CatchWork{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-center mx-auto">
-      <h4 class="text-center my-3">Сервис по поиску и рассылки вакансий</h4>
+  {% if user.is_authenticated %}
+    <div class="row my-3">
+      <div class="col-md-8 mx-auto">
+        <div class="card" style="height: 25rem; background: url('{% static 'french_street.png' %}');">
+          <div class="card-body">
+            <h4 class="text-center">Найди то что тебе нравится!</h4>
+            <form class="col-md-6" method="GET" action="{% url 'list' %}">
+              <div class="form-group my-5">{{ form.as_p }}</div>
+              <button type="submit" class="btn alert-success" style="border-radius: 10px 10px 90px 90px / 10px 10px 10px 10px;">Найти</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <form method="GET" action="{% url 'list' %}">
-        <div class="form-group">{{ form.as_p }}</div>
-        <button type="submit" class="btn alert-success" style="border-radius: 10px 10px 90px 90px / 10px 10px 10px 10px;">Найти</button>
-      </form>
+  {% else %}
+    <div class="row my-3">
+      <div class="col-md-8 mx-auto">
+        <div class="card" style="height: 25rem; background: url('{% static 'french_street.png' %}');">
+          <div class="card-body">
+            <h4 class="text-center">Сервис по поиску и рассылке вакансий</h4>
+            <h6 class="text-center">Зарегистрируйтесь что бы просмотреть или подписаться на вакансии</h6>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  {% endif %}
 {% endblock %}

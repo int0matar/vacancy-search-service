@@ -1,22 +1,22 @@
 from django import forms
 
-from scraping.models import City, Language
+from scraping.models import Location, Specialty
 
 
-class FindForm(forms.Form):
-    city = forms.ModelChoiceField(
-        queryset=City.objects.all(),
+class VacancyRequestForm(forms.Form):
+    location = forms.ModelChoiceField(
+        queryset=Location.objects.all(),
         to_field_name='slug',
         required=False,
-        label='Город',
-        label_suffix='',
+        label=False,
+        empty_label='Выберите локацию',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-    language = forms.ModelChoiceField(
-        queryset=Language.objects.all(),
+    specialty = forms.ModelChoiceField(
+        queryset=Specialty.objects.all(),
         to_field_name='slug',
         required=False,
-        label='Специальность',
-        label_suffix='',
+        label=False,
+        empty_label='Выберите специальность',
         widget=forms.Select(attrs={'class': 'form-control'})
     )

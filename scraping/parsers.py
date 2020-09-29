@@ -30,8 +30,7 @@ def work_ua(url, location=None, specialty=None):
             main_div = soup.find('div', id='pjax-job-list')
 
             if main_div:
-                list_div = main_div.find_all('div',
-                                             attrs={'class': 'job-link'})
+                list_div = main_div.find_all('div', attrs={'class': 'job-link'})
                 for div in list_div:
                     title = div.find('h2')
                     link = title.a['href']
@@ -40,12 +39,12 @@ def work_ua(url, location=None, specialty=None):
                     company_name = div.find('img')
                     if company_name:
                         company = company_name['alt']
-                    jobs.append({'url_field': domain+link,
-                                 'title_char_field': title.text,
-                                 'company_char_field': company,
-                                 'description_text_field': description,
-                                 'location_fk_id': location,
-                                 'specialty_fk_id': specialty})
+                    jobs.append({'url': domain+link,
+                                 'title': title.text,
+                                 'company': company,
+                                 'description': description,
+                                 'location_id': location,
+                                 'specialty_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Div does not exists'})
         else:
@@ -74,16 +73,16 @@ def rabota_ua(url, location=None, specialty=None):
                         link = title.a['href']
                         description = div.p.text
                         company = 'No name'
-                        company_name = div.find(
-                            'p', attrs={'class': 'company-name'})
+                        company_name = div.find('p', attrs={'class':
+                                                            'company-name'})
                         if company_name:
                             company = company_name.a.text
-                        jobs.append({'url_field': domain+link,
-                                     'title_char_field': title.text,
-                                     'company_char_field': company,
-                                     'description_text_field': description,
-                                     'location_fk_id': location,
-                                     'specialty_fk_id': specialty})
+                        jobs.append({'url': domain+link,
+                                     'title': title.text,
+                                     'company': company,
+                                     'description': description,
+                                     'location_id': location,
+                                     'specialty_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Table does not exists'})
         else:
@@ -116,12 +115,12 @@ def dou_ua(url, location=None, specialty=None):
                                                               'company'})
                         if company_name:
                             company = company_name.text
-                        jobs.append({'url_field': link,
-                                     'title_char_field': title.text,
-                                     'company_char_field': company,
-                                     'description_text_field': description,
-                                     'location_fk_id': location,
-                                     'specialty_fk_id': specialty})
+                        jobs.append({'url': link,
+                                     'title': title.text,
+                                     'company': company,
+                                     'description': description,
+                                     'location_id': location,
+                                     'specialty_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Div does not exists'})
         else:
@@ -147,20 +146,20 @@ def djinni_co(url, location=None, specialty=None):
                 for li in list_li:
                     title = li.find('div', attrs={'class': 'list-jobs__title'})
                     link = title.a['href']
-                    company_description = li.find('div', attrs={'class':
-                                                         'list-jobs__description'})
+                    company_description = li.find(
+                        'div', attrs={'class': 'list-jobs__description'})
                     description = company_description.text
-                    company_name = li.find('div', attrs={'class':
-                                                  'list-jobs__details__info'})
+                    company_name = li.find(
+                        'div', attrs={'class': 'list-jobs__details__info'})
                     company = 'No name'
                     if company_name:
                         company = company_name.text
-                    jobs.append({'url_field': domain+link,
-                                 'title_char_field': title.text,
-                                 'company_char_field': company,
-                                 'description_text_field': description,
-                                 'location_fk_id': location,
-                                 'specialty_fk_id': specialty})
+                    jobs.append({'url': domain+link,
+                                 'title': title.text,
+                                 'company': company,
+                                 'description': description,
+                                 'location_id': location,
+                                 'specialty_id': specialty})
             else:
                 errors.append({'url': url, 'title': 'Div does not exists'})
         else:

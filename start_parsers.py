@@ -26,11 +26,11 @@ parsers = ((work_ua, 'work_ua'),
 
 def get_unique_pair():
     """
-    Returns unique id pairs of tuple by city and language
+    Return unique pairs id of tuple by location and specialty
     """
     subscribed_users = User.objects.filter(is_subscriber=True).values()
     unique_pair_of_user = set(
-        (value_id['location_fk_id'], value_id['specialty_fk_id'])
+        (value_id['location_id'], value_id['specialty_id'])
         for value_id in subscribed_users
     )
     return unique_pair_of_user
@@ -38,20 +38,20 @@ def get_unique_pair():
 
 def get_pair_id_with_url(pair_id):
     """
-    Returns list with dictionary by unique tuple of get_unique_pair method
-    and field Url.url_json_field
+    Return list with dictionary by unique tuple of get_unique_pair method
+    and field Url.url_json
     """
     url_values = Url.objects.all().values()
     pair_id_with_urls = {
-        (value_id['location_fk_id'], value_id['specialty_fk_id']):
-        value_id['url_json_field'] for value_id in url_values
+        (value_id['location_id'], value_id['specialty_id']):
+        value_id['url_json'] for value_id in url_values
     }
     urls = []
     for id_ in pair_id:
-        set_pair = {'location_fk_id': id_[0], 'specialty_fk_id': id_[1]}
+        set_pair = {'location_id': id_[0], 'specialty_id': id_[1]}
         get_url = pair_id_with_urls.get(id_)
         if get_url:
-            set_pair['url_json_field'] = pair_id_with_urls.get(id_)
+            set_pair['url_json'] = pair_id_with_urls.get(id_)
             urls.append(set_pair)
     return urls
 
@@ -65,11 +65,13 @@ async def execute(task):
     Asynchronous execution of parser functions
     """
     function, location, specialty, url = task
-    vacancy_log, error_log = await loop.run_in_executor(None,
-                                                        function,
-                                                        location,
-                                                        specialty,
-                                                        url)
+    vacancy_log, error_log = await loop.run_in_executor(
+        None,
+        function,
+        location,
+        specialty,
+        url
+    )
     data_for_recording_vacancies.extend(vacancy_log)
     data_for_recording_errors.extend(error_log)
 
@@ -77,9 +79,9 @@ loop = asyncio.get_event_loop()
 
 instruction = [
     (function,
-     data['url_json_field'][parser],
-     data['location_fk_id'],
-     data['specialty_fk_id'])
+     data['url_json'][parser],
+     data['location_id'],
+     data['specialty_id'])
     for data in url_list for function, parser in parsers
 ]
 tasks = asyncio.wait([loop.create_task(execute(task)) for task in instruction])
@@ -94,5 +96,5 @@ for record in data_for_recording_vacancies:
         pass
 
 if data_for_recording_errors:
-    error_dump = Error(error_json_field=data_for_recording_errors)
+    error_dump = Error(error_json=data_for_recording_errors)
     error_dump.save()

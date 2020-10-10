@@ -22,33 +22,36 @@ administrator_email = EMAIL_HOST_ADMIN
 
 from_email = EMAIL_HOST_USER
 
-# Sending letter with vacancy
-subscribed_users = User.objects.filter(is_subscription=True) \
-                               .values('city', 'language', 'email')
+
+# Sends an email if there are vacancies on the current date
+subscribed_users = User.objects.filter(is_subscriber=True) \
+                               .values('location', 'specialty', 'email')
 
 user_with_pair_id_and_email = {}
 
 for user in subscribed_users:
-    user_with_pair_id_and_email.setdefault((user['city'],
-                                            user['language']), [])
-    user_with_pair_id_and_email[(user['city'],
-                                 user['language'])].append(user['email'])
+    user_with_pair_id_and_email.setdefault((user['location'],
+                                            user['specialty']), [])
+    user_with_pair_id_and_email[(user['location'],
+                                 user['specialty'])].append(user['email'])
 
 if user_with_pair_id_and_email:
-    where_id = {'city_id__in': [], 'language_id__in': []}
+    where_id = {'location_id__in': [], 'specialty_id__in': []}
 
     for pair_id in user_with_pair_id_and_email.keys():
-        where_id['city_id__in'].append(pair_id[0])
-        where_id['language_id__in'].append(pair_id[1])
+        where_id['location_id__in'].append(pair_id[0])
+        where_id['specialty_id__in'].append(pair_id[1])
 
     currently_vacancies = Vacancy.objects.filter(**where_id,
-                                                 timestamp=current_day) \
+                                                 auto_date=current_day) \
                                          .values()[:10]
     vacancies = {}
 
     for vacancy in currently_vacancies:
-        vacancies.setdefault((vacancy['city_id'], vacancy['language_id']), [])
-        vacancies[(vacancy['city_id'], vacancy['language_id'])].append(vacancy)
+        vacancies.setdefault((vacancy['location_id'],
+                              vacancy['specialty_id']), [])
+        vacancies[(vacancy['location_id'],
+                   vacancy['specialty_id'])].append(vacancy)
 
     for pair_id, emails in user_with_pair_id_and_email.items():
         rows = vacancies.get(pair_id, [])
@@ -75,8 +78,9 @@ if user_with_pair_id_and_email:
             message.attach_alternative(html_content, "text/html")
             message.send()
 
-# Sending letter with errors
-currently_errors = Error.objects.filter(timestamp=current_day)
+
+# Sends an email if there is an error
+currently_errors = Error.objects.filter(auto_date=current_day)
 
 if currently_errors.exists():
     take_the_first = currently_errors.first()
@@ -85,7 +89,7 @@ if currently_errors.exists():
 
     for error in error:
         subject = f'CatchWork. Ошибки за {current_day}'
-        text_content = 'Ошибки'
+        text_content = 'Ошибка'
         html_content += f'<p><a href="{error["url"]}">{error["title"]}</a></p>'
         to = administrator_email
         message = EmailMultiAlternatives(
@@ -97,19 +101,21 @@ if currently_errors.exists():
         message.attach_alternative(html_content, "text/html")
         message.send()
 
-# Sending letter with empty url
-url_values = Url.objects.all().values('city', 'language')
 
-urls = {(value_id['city'],
-         value_id['language']): True for value_id in url_values}
+# Sends an email if there is an empty URL
+url_values = Url.objects.all().values('location', 'specialty')
+
+urls = {(value_id['location'],
+         value_id['specialty']): True for value_id in url_values}
+
 html_content = ''
 
 for pair_id in urls.keys():
     if pair_id not in urls:
         subject = 'Отсутствует URL'
-        text_content = 'Ошибки'
-        html_content += f'<p>Город: {pair_id[0]}, ' \
-                        f'специальность: {pair_id[1]}, отсутствует URL</p><br>'
+        text_content = 'Ошибка'
+        html_content += f'<p>Город: {pair_id[0]}, специальность: {pair_id[1]},'\
+                         ' отсутствует URL</p><br>'
         to = administrator_email
         message = EmailMultiAlternatives(
             subject,

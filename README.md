@@ -1,1 +1,1 @@
-# vacancy-search-service
+Service for search and subscription to vacancies.

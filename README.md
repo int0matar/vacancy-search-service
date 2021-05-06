@@ -1,1 +1,1 @@
-Service for search and subscription to vacancies.
+Service for searching and subscribing to the mailing of vacancies.

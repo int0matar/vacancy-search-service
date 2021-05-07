@@ -1,15 +1,9 @@
 @font-face {
-  font-family: 'Fira Code';
-  src: url('{% static 'fonts/FiraCode-Regular.woff2' %}') format("woff2"),
-       url('{% static 'fonts/FiraCode-Regular.woff' %}') format("woff"),
-       url('{% static 'fonts/FiraCode-Regular.ttf' %}') format("truetype");
-}
-
-#brandtext {
   font-family: "Fira Code";
-  color: #2E4053;
+  src: url({% static "/fonts/FiraCode-Regular.woff2" %}) format("woff2"),
+       url({% static "/fonts/FiraCode-Regular.woff" %}) format("woff"),
 }
 
-#maintext {
-  font-family: "Fira Code"
+#firacode {
+  font-family: "Fira Code";
 }

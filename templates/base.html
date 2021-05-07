@@ -8,16 +8,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="icon" href="{% static 'fish512.ico' %} ">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/main.css' %} ">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="{% static 'fish512.ico' %}" rel="icon">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <title>{% block title %}{% endblock %}</title>
   </head>
 
   <body>
     <div class="col-md-10 mx-auto">
-      <nav id="maintext" class="navbar navbar-expand-lg navbar-light alert-success" style="border-radius: 5px 5px 10px 10px / 5px 5px 90px 90px;">
-        <a id="brandtext" class="navbar-brand" href="{% url 'home' %}">CatchWork</a>
+      <nav id="firacode" class="navbar navbar-expand-lg navbar-light" style="border-radius: 5px 5px 10px 10px / 5px 5px 90px 90px; background-color: #C6E6E6;">
+        <img style="margin-bottom: 3px;" src="{% static 'fish512.ico' %}" width="40" height="40"></img>
+        <a class="navbar-brand mx-3" href="{% url 'home' %}">
+          <img src="{% static 'textlogo.png' %}" width="140" height="35"></img>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -46,6 +49,34 @@
           </ul>
         </div>
       </nav>
+    </div>
+
+    <div class="container">
+      <div class="row my-3">
+        <div class="col-8 mx-auto">
+
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              {% else %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+        </div>
+      </div>
     </div>
 
     <div class="container">

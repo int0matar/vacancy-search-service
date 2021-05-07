@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
 
-{% block title %}Аккаунт{% endblock %}
+{% block title %}Настройки{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <h5 class="my-2">Удалить свой аккаунт?</h5>
-      <form method="POST" action="{% url 'accounts:delete' %}">{% csrf_token %}
-        <button type="submit" class="btn alert-warning my-3" style="border-radius: 5px 5px 90px 90px / 5px 5px 5px 5px;">Удалить</button>
-      </form>
+  <div class="row my-3">
+    <div class="col-md-8 mx-auto">
+      <div class="alert alert-success" role="alert" style="background-color: #C6E6E6;">
+        <h5 class="alert-heading">Настройки пользователя</h5>
+        <hr>
+        <p>Удаление учетной записи прекратит рассылку</p>
+        <form method="POST" action="{% url 'accounts:delete' %}">{% csrf_token %}
+          <button type="submit" class="btn alert-warning" style="border-radius: 5px 5px 90px 90px / 5px 5px 5px 5px;">Удалить</button>
+        </form>
+      </div>
     </div>
   </div>
 {% endblock %}

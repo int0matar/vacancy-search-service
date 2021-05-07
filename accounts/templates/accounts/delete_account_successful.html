@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
 
-{% block title %}Аккаунт{% endblock %}
+{% block title %}Настройки{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <h5 class="my-2">Удаление пользователя</h5>
-      <p>Пользователь {{ user.email }} успешно удален
-        <a href="{% url 'home' %}">Вернуться на главную</a>
-      </p>
+  <div class="row my-3">
+    <div class="col-md-8 mx-auto">
+      <div id="firacode" class="alert alert-secondary" role="alert" style="background-color: #FFF0BF;">
+        <h5 class="alert-heading">Удаление пользователя!</h5>
+        <p>Пользователь {{ user.email }} успешно удален</p>
+        <hr>
+        <p class="mb-0"><a href="{% url 'home' %}">Главная</a></p>
+      </div>
     </div>
   </div>
 {% endblock %}

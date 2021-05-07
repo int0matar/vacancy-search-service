@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
+{% load static %}
 
-{% block title %}Вход{% endblock %}
+{% block title %}Авторизация{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-md-6 mx-auto ">
-      <form method="POST" action="">{% csrf_token %}
-        <div class="form-group my-3">{{ form.as_p }}</div>
-        <button type="submit" class="btn alert-success" style="border-radius: 10px 10px 90px 90px / 10px 10px 10px 10px;">Войти</button>
-      </form>
+  <div class="row my-3">
+    <div class="col-md-6 mx-auto">
+      <div class="card" style="height: 25rem; background: url('{% static 'french_street.png' %}');">
+        <div class="card-body">
+          <h4 class="text-center">Авторизация</h4>
+          <form method="POST" action="">{% csrf_token %}
+            <div class="form-group my-5">{{ form.as_p }}</div>
+            <button type="submit" class="btn alert-success" style="border-radius: 10px 10px 90px 90px / 10px 10px 10px 10px;">Войти</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
